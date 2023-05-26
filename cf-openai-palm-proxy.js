@@ -155,13 +155,30 @@ function transformResponse(palmData, deployName) {
   if (deployName === chatmodel) {
     // Check if the 'candidates' array exists and if it's not empty
     if (!palmData.candidates || palmData.candidates.length === 0) {
-      // If it doesn't exist or is empty, create a default candidate message
-      palmData.candidates = [
-        {
-          "author": "1",
-          "content": "Ooops, the model returned nothing"
-        }
-      ];
+      if (palmData.filters)
+      {
+        palmData.candidates = [
+          {
+            "author": "1",
+            "content": `Filter: ${palmData.filters[0].reason}`
+          }
+        ];
+      } else if (palmData.error) {
+        palmData.candidates = [
+          {
+            "author": "1",
+            "content": `Error ${palmData.error.code}: ${palmData.error.message}`
+          }
+        ];
+      } else {
+        // If it doesn't exist or is empty, create a default candidate message
+        palmData.candidates = [
+          {
+            "author": "1",
+            "content": "Ooops, the model returned nothing"
+          }
+        ];
+      }
     }
     response = {
       id: "chatcmpl-QXlha2FBbmROaXhpZUFyZUF3ZXNvbWUK",
@@ -169,9 +186,9 @@ function transformResponse(palmData, deployName) {
       created: Math.floor(Date.now() / 1000), // Current Unix timestamp
       model: 'gpt-3.5-turbo', // Static model name
       usage: {
-        prompt_tokens: palmData.messages.length, // This is a placeholder. Replace with actual token count if available
-        completion_tokens: palmData.candidates.length, // This is a placeholder. Replace with actual token count if available
-        total_tokens: palmData.messages.length + palmData.candidates.length, // This is a placeholder. Replace with actual token count if available
+        prompt_tokens: 0, // This is a placeholder. Replace with actual token count if available
+        completion_tokens: 0, // This is a placeholder. Replace with actual token count if available
+        total_tokens: 0, // This is a placeholder. Replace with actual token count if available
       },
       choices: palmData.candidates.map((candidate, index) => ({
         message: {
