@@ -7,7 +7,7 @@ const mapper = {
     'gpt-4': DEPLOY_NAME_GPT4
 };
 
-const apiVersion="2023-03-15-preview"
+const apiVersion="2023-05-15"
 
 addEventListener("fetch", (event) => {
   event.respondWith(handleRequest(event.request));
@@ -19,6 +19,9 @@ async function handleRequest(request) {
   }
 
   const url = new URL(request.url);
+  if (url.pathname.startsWith("//")) {
+    url.pathname = url.pathname.replace('/',"")
+  }
   if (url.pathname === '/v1/chat/completions') {
     var path="chat/completions"
   } else if (url.pathname === '/v1/completions') {
